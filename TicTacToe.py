@@ -15,6 +15,7 @@ FOOTER_HEIGHT = 45
 BOARD_COLOR = WHITE
 LINE_COLOR = BLACK
 LINE_THICKNESS = 4
+MARKS_SCALE = 0.66  # Scale of our X and O marks relative to a field size
 
 
 class TicTacToe:
@@ -24,8 +25,17 @@ class TicTacToe:
         pg.init()                                                   # Initializes all pygame modules
         self.screen = pg.display.set_mode((WIDTH, HEIGHT + FOOTER_HEIGHT))     # Init window
         pg.display.set_caption('Tic Tac Toe')                       # Set window title
+        self.x = pg.image.load('res/X_modified.png')
+        self.x = pg.transform.scale(self.x, (WIDTH / 3 * MARKS_SCALE, HEIGHT / 3 * MARKS_SCALE))
+        self.o = pg.image.load('res/o_modified.png')
+        self.o = pg.transform.scale(self.o, (WIDTH / 3 * MARKS_SCALE, HEIGHT / 3 * MARKS_SCALE))
+        self.mark_rect = self.x.get_rect()
+
+        self.curr_player = 'X'
+        self.other_player = 'O'
 
         self.draw_board()
+        self.draw_marks('X', 0, 0)
         self.main_loop()
 
     def draw_board(self):
@@ -34,6 +44,11 @@ class TicTacToe:
             pg.draw.line(self.screen, LINE_COLOR, (x * WIDTH / 3, 0), (x * WIDTH / 3, HEIGHT), LINE_THICKNESS)
         for y in range(1, 4):
             pg.draw.line(self.screen, LINE_COLOR, (0, y * HEIGHT / 3), (WIDTH, y * HEIGHT / 3), LINE_THICKNESS)
+
+    def draw_marks(self, xo, x_tile, y_tile):
+        self.screen.blit(self.x if (xo == 'X') else self.o,
+                         (WIDTH / 3 * x_tile + WIDTH / 6 - self.mark_rect.width / 2,
+                          HEIGHT / 3 * y_tile + HEIGHT / 6 - self.mark_rect.height / 2))
 
     @staticmethod
     def click():
