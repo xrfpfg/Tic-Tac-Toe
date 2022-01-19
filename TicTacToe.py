@@ -3,6 +3,7 @@ import json
 import os
 import random
 import pygame as pg  # Set alias
+import pygame_menu as pg_m
 from pygame.locals import *
 
 # COLORS
@@ -33,6 +34,18 @@ class TicTacToe:
         # Init window and set window title
         self.screen = pg.display.set_mode((WIDTH, HEIGHT + FOOTER_HEIGHT))
         pg.display.set_caption('Tic Tac Toe')
+
+        self.myfont, self.label, self.label_rect, self.x, self.o, self.mark_rect, self.next_player, self.player1, \
+            self.player2, self.game_ended, self.state_json = None, None, None, None, None, None, None, None, None, None, None
+
+        menu = pg_m.Menu('Welcome', 400, 300, theme=pg_m.themes.THEME_BLUE)
+        self.name1 = menu.add.text_input('Spielername 1:', default='Player1 (X)')
+        self.name2 = menu.add.text_input('Spielername 2:', default='Player2 (O)')
+        menu.add.button('Play', self.init_game)
+        menu.mainloop(self.screen)
+
+    def init_game(self):
+        """ Init the game """
         # Init font
         self.myfont = pg.font.SysFont('monospace', 15)
         self.label = None       # Placeholder
@@ -46,8 +59,7 @@ class TicTacToe:
 
         # Init game vars
         self.next_player = random.randint(1, 2)
-        self.player1 = 'X'
-        self.player2 = 'O'
+        self.player1, self.player2 = self.name1.get_value(), self.name2.get_value()
         self.game_ended = False
         self.state_json = copy.deepcopy(INIT_GAME_STATE_JSON)
 
@@ -78,7 +90,7 @@ class TicTacToe:
         y_tile = 3 if (y_pos > HEIGHT) else y_tile
         tile_no = 3 * y_tile + x_tile + 1
         try:    # Catch KeyError which happens when we click the bottom tile
-            if self.state_json[str(tile_no)] == 0:
+            if self.state_json[str(tile_no)] == 0 and not self.game_ended:
                 # If the clicked tile is empty: Draw current players mark,
                 # insert it into the game state json and swap current player
                 self.draw_marks(self.next_player, x_tile, y_tile)
@@ -91,7 +103,6 @@ class TicTacToe:
             # Make restart "button" available if the match ended
             if self.game_ended:
                 self.game_ended = False
-                del self.state_json
                 self.state_json = copy.deepcopy(INIT_GAME_STATE_JSON)
                 self.draw_board()
 
