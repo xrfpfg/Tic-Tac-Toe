@@ -1,6 +1,7 @@
 import copy
 import json
 import os
+import random
 import pygame as pg  # Set alias
 from pygame.locals import *
 
@@ -13,8 +14,8 @@ WINDOW_SIZE = WIDTH, HEIGHT = 400, 400
 FOOTER_HEIGHT = 45
 
 # BOARD STYLES
-BOARD_COLOR = WHITE
-LINE_COLOR = BLACK
+BOARD_COLOR = pg.Color('white')
+LINE_COLOR = pg.Color('dodgerblue2')
 LINE_THICKNESS = 4
 MARKS_SCALE = 0.66  # Scale of our X and O marks relative to a field size
 
@@ -44,7 +45,7 @@ class TicTacToe:
         self.mark_rect = self.x.get_rect()
 
         # Init game vars
-        self.next_player = 1
+        self.next_player = random.randint(1, 2)
         self.player1 = 'X'
         self.player2 = 'O'
         self.game_ended = False
@@ -92,7 +93,7 @@ class TicTacToe:
                 self.game_ended = False
                 del self.state_json
                 self.state_json = copy.deepcopy(INIT_GAME_STATE_JSON)
-                self.redraw()
+                self.draw_board()
 
     def check_win_draw(self):
         """ Checks if a player won or all tiles are taken = draw. Returns True if this happens """
@@ -128,9 +129,6 @@ class TicTacToe:
         self.label_rect = self.label.get_rect()
         self.screen.blit(self.label, (WIDTH / 2 - self.label_rect.width / 2, HEIGHT + FOOTER_HEIGHT / 2 - self.label_rect.height / 2))
 
-    def redraw(self):
-        self.draw_board()
-
     def main_loop(self):
         """ Main loop, interaction listener and updating our screen """
         running = True
@@ -140,8 +138,6 @@ class TicTacToe:
                     running = False
                 if event.type == MOUSEBUTTONDOWN:
                     self.click()
-                    # if self.won or self.draw:
-                    #   self.show_endscreen
             pg.display.flip()
 
 
