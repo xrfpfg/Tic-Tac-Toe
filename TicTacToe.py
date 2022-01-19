@@ -1,6 +1,6 @@
-import os
-import sys
 import json
+import os
+
 import pygame as pg  # Set alias
 from pygame.locals import *
 
@@ -72,7 +72,26 @@ class TicTacToe:
             # insert it into the game state json and swap current player
             self.draw_marks(self.next_player, x_tile, y_tile)
             self.state_json[str(tile_no)] = self.next_player
+            self.check_win_draw()
             self.next_player = 1 if (self.next_player == 2) else 2
+
+    def check_win_draw(self):
+        for player in (1, 2):
+            if self.state_json['1'] == player and self.state_json['2'] == player and self.state_json['3'] == player or \
+               self.state_json['4'] == player and self.state_json['5'] == player and self.state_json['6'] == player or \
+               self.state_json['7'] == player and self.state_json['8'] == player and self.state_json['9'] == player or \
+               self.state_json['1'] == player and self.state_json['4'] == player and self.state_json['7'] == player or \
+               self.state_json['2'] == player and self.state_json['5'] == player and self.state_json['8'] == player or \
+               self.state_json['3'] == player and self.state_json['6'] == player and self.state_json['9'] == player or \
+               self.state_json['1'] == player and self.state_json['5'] == player and self.state_json['9'] == player or \
+               self.state_json['3'] == player and self.state_json['5'] == player and self.state_json['7'] == player:
+
+                print('WIN player: ' + self.player1 if (player == 1) else 'WIN player: ' + self.player2)
+                return  # Don´t check on draw if someone won
+        for tile in self.state_json:
+            if self.state_json[tile] == 0:
+                return  # Exit function if a tile has not been "captured" by a player yet
+        print('Draw')   # Otherwise print draw notification
 
     def main_loop(self):
         """ Main loop, interaction listener and updating our screen """
