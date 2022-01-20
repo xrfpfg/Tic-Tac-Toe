@@ -38,10 +38,12 @@ class TicTacToe:
         self.myfont, self.label, self.label_rect, self.x, self.o, self.mark_rect, self.next_player, self.player1, \
             self.player2, self.game_ended, self.state_json = None, None, None, None, None, None, None, None, None, None, None
 
+        # Init menu
         menu = pg_m.Menu('Welcome', 400, 300, theme=pg_m.themes.THEME_BLUE)
         self.name1 = menu.add.text_input('Spielername 1:', default='Player1 (X)')
         self.name2 = menu.add.text_input('Spielername 2:', default='Player2 (O)')
         menu.add.button('Play', self.init_game)
+        # Start
         menu.mainloop(self.screen)
 
     def init_game(self):
